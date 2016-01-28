@@ -227,7 +227,7 @@ public class Triplite extends Observable {
                         break;
                 }
             } catch (NumberFormatException nfe) {
-                logIt("Error parsing " + reading);
+                logIt("Non-data reading: " + reading);
             }
         }
 
