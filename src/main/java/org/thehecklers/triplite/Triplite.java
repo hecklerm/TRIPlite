@@ -69,11 +69,13 @@ public class Triplite extends Observable {
     Properties applicationProps = new Properties();
 
     private boolean hasWsConnection;
+    private boolean hasGsConnection;
 
     private static PrintStream remoteLog = null;
 
     private WsControlClient wsControl = null;
     private WsDataClient wsData = null;
+    private WsDataClient wsGs = null;
 
     public boolean connect() throws Exception {
         // Initialize the log (PrintStream with autoflush)
@@ -121,6 +123,21 @@ public class Triplite extends Observable {
             this.addObserver(wsControl);
         }
 
+        // For graphing service/dashboard of readings
+        String uriGraphService = getProperty("uriGraphService");
+        if (uriGraphService.isEmpty()) {
+            hasGsConnection = false;
+//            // Get out of here!
+//            logIt("ERROR: Property 'uriGraphService' missing from Triplite.properties file.");
+//            Exception e = new Exception("ERROR: Property 'uriGraphService' missing from Triplite.properties file.");
+//            throw e;
+        } else {
+            hasGsConnection = true;
+
+            wsGs = new WsDataClient(uriGraphService);
+            this.addObserver(wsGs);
+        }
+
         String freqProp = getProperty("pubFreq");
         if (!freqProp.isEmpty()) {
             pubFreq = Integer.parseInt(freqProp);
@@ -130,27 +147,31 @@ public class Triplite extends Observable {
     }
 
     public boolean disconnect() {
-        logIt("Closing serial port");
+        logIt("BEGIN SHUTDOWN PROCEDURES:");
 
         if (this.countObservers() > 0) {
-            logIt("Disconnecting observers");
+            logIt("  Disconnecting observers...");
             this.deleteObservers();
         }
 
         if (hasWsConnection) {
-            logIt("Stopping websockets");
+            logIt("  Disconnecting from data & control websockets...");
             wsControl.disconnect();
             wsData.disconnect();
         }
+        if (hasGsConnection) {
+            logIt("  Disconnecting from graph service...");
+            wsGs.disconnect();
+        }
 
         if (isConnected) {
-            logIt("Closing serial port");
+            logIt("  Closing serial port...");
             isConnected = serial.disconnect();
             executor.shutdownNow();
         }
 
         if (remoteLog != null) {
-            logIt("Disconnecting, closing log. Goodbye for now!");
+            logIt("END OF LINE");
             remoteLog.close();
         }
 
