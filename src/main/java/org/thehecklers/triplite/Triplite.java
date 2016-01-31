@@ -292,7 +292,9 @@ public class Triplite extends Observable {
                             setChanged();
                             //notifyObservers(readBuffer);
                             Reading reading = createBeanFromReading(readBuffer);
-                            notifyObservers(reading);
+                            if (reading.getHum() > -1d) {   // Valid reading, temporary validation, revisit. MAH
+                                notifyObservers(reading);
+                            }
 
                             logIt("--> " + readBuffer);  // Write published entry to file (w/annotation)
                             readingCount = 1;   // Reset counter
