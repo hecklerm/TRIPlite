@@ -246,6 +246,15 @@ public class Triplite extends Observable {
                     case Reading.HEADING:
                         newBean.setHeading(Integer.parseInt(values[x]));
                         break;
+                    case Reading.DISTLEFT:
+                        newBean.setDistLeft(Long.parseLong(values[x]));
+                        break;
+                    case Reading.DISTRIGHT:
+                        newBean.setDistRight(Long.parseLong(values[x]));
+                        break;
+                    case Reading.DISTFORWARD:
+                        newBean.setDistForward(Long.parseLong(values[x]));
+                        break;
                 }
             } catch (NumberFormatException nfe) {
                 logIt("Non-data reading: " + reading);

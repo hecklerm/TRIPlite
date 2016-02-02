@@ -38,13 +38,16 @@ public class Reading {
     public static final int HUMIDITY = 0,
             TEMPERATURE = 1,
             RADCPM = 2,
-            HEADING = 3;
+            HEADING = 3,
+            DISTLEFT = 4,
+            DISTRIGHT = 5,
+            DISTFORWARD = 6;
 
     private final ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     private Integer id;
     private double hum, temp;
-    private long cpm;
+    private long cpm, distLeft, distRight, distForward;
     private int heading;
 
     public Reading() {
@@ -53,14 +56,20 @@ public class Reading {
         this.temp = -1d;
         this.cpm = -1l;
         this.heading = 0;
+        this.distLeft = -1l;
+        this.distRight = -1l;
+        this.distForward = -1l;
     }
 
-    public Reading(Integer id, double hum, double temp, long cpm, int heading) {
+    public Reading(Integer id, double hum, double temp, long cpm, int heading, long distLeft, long distRight, long distForward) {
         this.id = id;
         this.hum = hum;
         this.temp = temp;
         this.cpm = cpm;
         this.heading = heading;
+        this.distLeft = distLeft;
+        this.distRight = distRight;
+        this.distForward = distForward;
     }
 
     public Integer getId() {
@@ -103,6 +112,30 @@ public class Reading {
         this.heading = heading;
     }
 
+    public long getDistLeft() {
+        return distLeft;
+    }
+
+    public void setDistLeft(long distLeft) {
+        this.distLeft = distLeft;
+    }
+
+    public long getDistRight() {
+        return distRight;
+    }
+
+    public void setDistRight(long distRight) {
+        this.distRight = distRight;
+    }
+
+    public long getDistForward() {
+        return distForward;
+    }
+
+    public void setDistForward(long distForward) {
+        this.distForward = distForward;
+    }
+
     public String toJson() {
         String json = "";
 
@@ -118,6 +151,8 @@ public class Reading {
     @Override
     public String toString() {
         return "Id=" + id + ", hum=" + hum + ", temp=" + temp +
-                ", radiation cpm=" + cpm + ", heading=" + heading + ".";
+                ", radiation cpm=" + cpm + ", heading=" + heading +
+                ", distance left=" + distLeft + ", distance right=" + distRight +
+                ", distance forward=" + distForward + ".";
     }
 }
